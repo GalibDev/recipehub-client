@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap');
+
+@layer base {
+  * {
+    @apply border-base-300;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-base-100 font-sans text-base-content antialiased;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight;
+  }
+
+  ::selection {
+    @apply bg-brand-600 text-white;
+  }
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-[1220px] px-4 sm:px-6 lg:px-8;
+  }
+
+  .section {
+    @apply py-14 sm:py-20;
+  }
+
+  .page-title {
+    @apply font-display text-3xl font-extrabold tracking-tight sm:text-4xl;
+  }
+
+  .btn-brand {
+    @apply btn border-0 bg-brand-600 text-white shadow-soft hover:bg-brand-700;
+  }
+
+  .card-premium {
+    @apply rounded-3xl border border-base-300 bg-base-100 shadow-soft;
+  }
+
+  .dashboard-card {
+    @apply rounded-3xl border border-base-300 bg-base-100 p-5 shadow-soft;
+  }
+
+  .input-clean {
+    @apply input input-bordered w-full bg-base-100 focus:border-brand-500 focus:outline-none;
+  }
+
+  .select-clean {
+    @apply select select-bordered w-full bg-base-100 focus:border-brand-500 focus:outline-none;
+  }
+
+  .label-text-strong {
+    @apply mb-2 block text-sm font-semibold;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-800;
+  }
+
+  .hero-glow {
+    background:
+      radial-gradient(circle at 75% 40%, rgba(245, 166, 35, 0.17), transparent 30%),
+      radial-gradient(circle at 20% 10%, rgba(22, 129, 58, 0.08), transparent 30%),
+      linear-gradient(135deg, #fff8ef 0%, #ffffff 55%, #eff8f1 100%);
+  }
+
+  [data-theme='dark'] .hero-glow {
+    background:
+      radial-gradient(circle at 75% 40%, rgba(245, 166, 35, 0.1), transparent 30%),
+      radial-gradient(circle at 20% 10%, rgba(94, 203, 126, 0.1), transparent 30%),
+      linear-gradient(135deg, #101a15 0%, #0d1913 55%, #13231a 100%);
+  }
+}
