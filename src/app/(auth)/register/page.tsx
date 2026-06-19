@@ -1,7 +1,7 @@
-import { AuthForm } from '@/components/auth/auth-form';
+import { AuthPageShell } from '@/components/auth/auth-page-shell';
 import { redirectIfAuthenticated } from '@/lib/server-session';
 
 export default async function RegisterPage() {
   await redirectIfAuthenticated();
-  return <AuthForm registerMode />;
+  return <AuthPageShell registerMode />;
 }

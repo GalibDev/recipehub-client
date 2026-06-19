@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Globe2, ChefHat, Crown } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -17,9 +17,19 @@ type AuthValues = {
 };
 
 export function AuthForm({ registerMode = false }: { registerMode?: boolean }) {
+  return <AuthFormInner registerMode={registerMode} nextPath={null} />;
+}
+
+export function AuthFormInner({
+  registerMode = false,
+  nextPath,
+}: {
+  registerMode?: boolean;
+  nextPath: string | null;
+}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { setUser } = useAuth();
+  const next = nextPath || '/dashboard';
   const {
     register,
     handleSubmit,
@@ -32,7 +42,6 @@ export function AuthForm({ registerMode = false }: { registerMode?: boolean }) {
       setUser(response.data.user);
       toast.success(registerMode ? 'Welcome to RecipeHub!' : 'Welcome back!');
 
-      const next = searchParams.get('next');
       const destination =
         next || (response.data.user.role === 'admin' ? '/admin' : '/dashboard');
 
@@ -46,9 +55,7 @@ export function AuthForm({ registerMode = false }: { registerMode?: boolean }) {
   async function loginWithGoogle() {
     const result = await authClient.signIn.social({
       provider: 'google',
-      callbackURL: `${window.location.origin}/auth-bridge?next=${encodeURIComponent(
-        searchParams.get('next') || '/dashboard'
-      )}`,
+      callbackURL: `${window.location.origin}/auth-bridge?next=${encodeURIComponent(next)}`,
     });
 
     if (result?.error) {
