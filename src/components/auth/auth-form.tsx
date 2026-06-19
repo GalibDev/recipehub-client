@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Globe2, ChefHat, Crown } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -29,6 +30,7 @@ export function AuthFormInner({
 }) {
   const router = useRouter();
   const { setUser } = useAuth();
+  const [googleEnabled, setGoogleEnabled] = useState(false);
   const next = nextPath || '/dashboard';
   const {
     register,
@@ -52,7 +54,19 @@ export function AuthFormInner({
     }
   }
 
+  useEffect(() => {
+    api
+      .get('/auth/config')
+      .then((response) => setGoogleEnabled(Boolean(response.data.google)))
+      .catch(() => setGoogleEnabled(false));
+  }, []);
+
   async function loginWithGoogle() {
+    if (!googleEnabled) {
+      toast.error('Google login is not configured yet');
+      return;
+    }
+
     const result = await authClient.signIn.social({
       provider: 'google',
       callbackURL: `${window.location.origin}/auth-bridge?next=${encodeURIComponent(next)}`,
@@ -131,7 +145,7 @@ export function AuthFormInner({
               {registerMode ? 'Register' : 'Login'}
             </button>
           </form>
-          <button onClick={loginWithGoogle} className="btn btn-outline mt-4 w-full">
+          <button onClick={loginWithGoogle} disabled={!googleEnabled} className="btn btn-outline mt-4 w-full">
             <Globe2 size={18} />
             Continue with Google
           </button>
