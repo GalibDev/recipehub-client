@@ -1,26 +1,10 @@
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { getCurrentUser, serializeUser } from '@/server/auth';
 import type { User } from '@/types';
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-
 export async function getServerSession(): Promise<User | null> {
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore.toString();
-
-  const response = await fetch(`${apiBaseUrl}/auth/session`, {
-    headers: {
-      cookie: cookieHeader,
-    },
-    cache: 'no-store',
-  });
-
-  if (!response.ok) {
-    return null;
-  }
-
-  const data = (await response.json()) as { user: User };
-  return data.user;
+  const user = await getCurrentUser();
+  return user ? serializeUser(user) : null;
 }
 
 export async function requireUser(nextPath = '/dashboard') {
