@@ -92,9 +92,13 @@ export function ManageUsersClient() {
                       </span>
                     </td>
                     <td>
-                      <button onClick={() => toggleBlock(user._id, Boolean(user.isBlocked))} className="btn btn-sm">
-                        {user.isBlocked ? 'Unblock' : 'Block'}
-                      </button>
+                      {user.role === 'admin' ? (
+                        <span className="text-sm text-base-content/45">Protected</span>
+                      ) : (
+                        <button onClick={() => toggleBlock(user._id, Boolean(user.isBlocked))} className="btn btn-sm">
+                          {user.isBlocked ? 'Unblock' : 'Block'}
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
