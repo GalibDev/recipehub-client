@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   BookOpen,
+  BadgeCheck,
   DollarSign,
   Flag,
   Heart,
@@ -15,6 +16,7 @@ import {
   User,
   Users,
   X,
+  ThumbsUp,
 } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -30,6 +32,7 @@ const userNav = [
   { href: '/dashboard/recipes', label: 'My Recipes', icon: BookOpen },
   { href: '/dashboard/add', label: 'Add Recipe', icon: PlusCircle },
   { href: '/dashboard/favorites', label: 'My Favorites', icon: Heart },
+  { href: '/dashboard/likes', label: 'Liked Recipes', icon: ThumbsUp },
   { href: '/dashboard/purchases', label: 'My Purchased Recipes', icon: ShoppingBag },
   { href: '/dashboard/profile', label: 'Profile', icon: User },
 ];
@@ -122,7 +125,10 @@ export function DashboardShell({
           <div className="ml-auto flex items-center gap-4">
             <ThemeToggle />
             <div className="text-right">
-              <p className="text-sm font-bold">{currentUser.name}</p>
+              <p className="flex items-center justify-end gap-1 text-sm font-bold">
+                {currentUser.name}
+                {currentUser.isPremium ? <BadgeCheck className="text-amber-500" size={15} /> : null}
+              </p>
               <p className="text-xs text-base-content/50">
                 {admin ? 'Administrator' : currentUser.isPremium ? 'Premium Member' : 'Free Member'}
               </p>

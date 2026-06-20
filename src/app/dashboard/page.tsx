@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { BookOpen, Crown, Heart, ShoppingBag, TrendingUp } from 'lucide-react';
+import { BookOpen, Crown, Heart, ShoppingBag, ThumbsUp, TrendingUp } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { DashboardStats } from '@/types';
 import { StatCard } from '@/components/dashboard/stat-card';
@@ -28,9 +28,10 @@ export default function DashboardOverviewPage() {
           Member workspace
         </span>
       </div>
-      <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard icon={BookOpen} label="Total Recipes" value={data?.recipes} />
         <StatCard icon={Heart} label="Total Favorites" value={data?.favorites} />
+        <StatCard icon={ThumbsUp} label="Liked Recipes" value={data?.likedRecipes} />
         <StatCard icon={TrendingUp} label="Total Likes Received" value={data?.likes} />
         <StatCard icon={ShoppingBag} label="Total Purchases" value={data?.purchases} />
       </div>

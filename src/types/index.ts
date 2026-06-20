@@ -66,6 +66,7 @@ export type Report = {
 export type DashboardStats = {
   recipes: number;
   favorites: number;
+  likedRecipes: number;
   likes: number;
   purchases: number;
 };
