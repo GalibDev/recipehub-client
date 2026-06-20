@@ -28,5 +28,21 @@ export function avatarFromName(name: string) {
 }
 
 export function imageOrFallback(src?: string) {
-  return src || fallbackFood;
+  if (!src) {
+    return fallbackFood;
+  }
+
+  try {
+    const url = new URL(src);
+    const host = url.hostname.replace(/^www\./, '').toLowerCase();
+    const directImage = /\.(avif|gif|jpe?g|png|webp)$/i.test(url.pathname);
+
+    if (!directImage && (host === 'ibb.co' || host === 'ibb.co.com' || host === 'imgbb.com')) {
+      return `/api/images/resolve?url=${encodeURIComponent(src)}`;
+    }
+  } catch {
+    return fallbackFood;
+  }
+
+  return src;
 }

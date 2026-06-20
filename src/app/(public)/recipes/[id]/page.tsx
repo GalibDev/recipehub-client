@@ -8,7 +8,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { api, messageOf } from '@/lib/api';
 import { reportReasons } from '@/lib/constants';
-import { formatCurrency, avatarFromName } from '@/lib/utils';
+import { formatCurrency, avatarFromName, imageOrFallback } from '@/lib/utils';
 import { ErrorView } from '@/components/shared/error-view';
 import { LoadingView } from '@/components/shared/loading-view';
 import { useAuth } from '@/providers';
@@ -119,7 +119,7 @@ export default function RecipeDetailsPage() {
       </div>
       <div className="mt-6 grid gap-10 lg:grid-cols-[1.1fr_.9fr]">
         <div>
-          <img className="aspect-[4/3] w-full rounded-3xl object-cover shadow-soft" src={recipe.recipeImage} alt={recipe.recipeName} />
+          <img className="aspect-[4/3] w-full rounded-3xl object-cover shadow-soft" src={imageOrFallback(recipe.recipeImage)} alt={recipe.recipeName} />
         </div>
         <div className="py-3">
           <span className="badge badge-success badge-outline">{recipe.category}</span>

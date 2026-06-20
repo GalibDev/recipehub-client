@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { api, messageOf } from '@/lib/api';
+import { imageOrFallback } from '@/lib/utils';
 import type { Paginated, Recipe } from '@/types';
 import { ErrorView } from '@/components/shared/error-view';
 import { LoadingView } from '@/components/shared/loading-view';
@@ -72,7 +73,7 @@ export function ManageRecipesClient() {
                   <tr key={recipe._id}>
                     <td>
                       <div className="flex items-center gap-3">
-                        <img className="size-12 rounded-lg object-cover" src={recipe.recipeImage} alt={recipe.recipeName} />
+                        <img className="size-12 rounded-lg object-cover" src={imageOrFallback(recipe.recipeImage)} alt={recipe.recipeName} />
                         <b>{recipe.recipeName}</b>
                       </div>
                     </td>

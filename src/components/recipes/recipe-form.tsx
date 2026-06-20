@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { api, messageOf } from '@/lib/api';
 import { categories, difficulties } from '@/lib/constants';
+import type { Recipe } from '@/types';
 
 type RecipeFormValues = {
   recipeName: string;
@@ -18,22 +19,30 @@ type RecipeFormValues = {
   instructions: string;
 };
 
-export function RecipeForm() {
+export function RecipeForm({ recipe }: { recipe?: Recipe }) {
   const router = useRouter();
+  const editing = Boolean(recipe);
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<RecipeFormValues>({
     defaultValues: {
-      difficultyLevel: 'Easy',
-      price: 2.99,
+      recipeName: recipe?.recipeName || '',
+      recipeImage: recipe?.recipeImage || '',
+      category: recipe?.category || categories[0],
+      cuisineType: recipe?.cuisineType || '',
+      difficultyLevel: recipe?.difficultyLevel || 'Easy',
+      preparationTime: recipe?.preparationTime || 30,
+      price: recipe?.price || 2.99,
+      ingredients: recipe?.ingredients?.join('\n') || '',
+      instructions: recipe?.instructions?.join('\n') || '',
     },
   });
 
   async function onSubmit(values: RecipeFormValues) {
     try {
-      await api.post('/recipes', {
+      const payload = {
         ...values,
         preparationTime: Number(values.preparationTime),
         price: Number(values.price),
@@ -45,8 +54,15 @@ export function RecipeForm() {
           .split('\n')
           .map((item) => item.trim())
           .filter(Boolean),
-      });
-      toast.success('Recipe published');
+      };
+
+      if (recipe?._id) {
+        await api.patch(`/recipes/${recipe._id}`, payload);
+      } else {
+        await api.post('/recipes', payload);
+      }
+
+      toast.success(editing ? 'Recipe updated' : 'Recipe published');
       router.push('/dashboard/recipes');
       router.refresh();
     } catch (error) {
@@ -108,7 +124,7 @@ export function RecipeForm() {
           <textarea className="textarea textarea-bordered h-40 w-full" {...register('instructions', { required: true })} />
         </label>
         <button disabled={isSubmitting} className="btn-brand w-full">
-          Publish Recipe
+          {editing ? 'Save Recipe' : 'Publish Recipe'}
         </button>
       </div>
     </form>

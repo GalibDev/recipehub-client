@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Heart, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { api, messageOf } from '@/lib/api';
+import { imageOrFallback } from '@/lib/utils';
 import type { Favorite, Paginated } from '@/types';
 import { EmptyView } from '@/components/shared/empty-view';
 import { ErrorView } from '@/components/shared/error-view';
@@ -50,7 +51,7 @@ export function FavoritesClient() {
             {data.items.map((item) =>
               item.recipeId ? (
                 <div className="card-premium overflow-hidden" key={item._id}>
-                  <img className="h-48 w-full object-cover" src={item.recipeId.recipeImage} alt={item.recipeId.recipeName} />
+                  <img className="h-48 w-full object-cover" src={imageOrFallback(item.recipeId.recipeImage)} alt={item.recipeId.recipeName} />
                   <div className="p-5">
                     <h3 className="text-xl font-bold">{item.recipeId.recipeName}</h3>
                     <div className="mt-5 flex gap-2">

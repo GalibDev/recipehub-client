@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Eye, HeartOff, ThumbsUp } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { api, messageOf } from '@/lib/api';
+import { imageOrFallback } from '@/lib/utils';
 import type { Paginated, Recipe } from '@/types';
 import { EmptyView } from '@/components/shared/empty-view';
 import { ErrorView } from '@/components/shared/error-view';
@@ -50,7 +51,7 @@ export function LikedRecipesClient() {
           <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {data.items.map((recipe) => (
               <div className="card-premium overflow-hidden" key={recipe._id}>
-                <img className="h-48 w-full object-cover" src={recipe.recipeImage} alt={recipe.recipeName} />
+                <img className="h-48 w-full object-cover" src={imageOrFallback(recipe.recipeImage)} alt={recipe.recipeName} />
                 <div className="p-5">
                   <h3 className="text-xl font-bold">{recipe.recipeName}</h3>
                   <p className="mt-2 text-sm text-base-content/55">
