@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { ChefHat, Crown, Globe2, Heart, ShieldCheck, Users, Utensils } from 'lucide-react';
+import { CalendarDays, ChefHat, Clock, Crown, Flame, Globe2, Heart, Leaf, ShieldCheck, Sparkles, TrendingUp, Users, Utensils } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Recipe } from '@/types';
 import { RecipeCard } from '@/components/recipes/recipe-card';
@@ -32,6 +32,54 @@ export default function HomePage() {
       return response.data.items as Recipe[];
     },
   });
+
+  const { data: statRecipes = [] } = useQuery({
+    queryKey: ['home-stat-recipes'],
+    queryFn: async () => {
+      const response = await api.get('/recipes?limit=24');
+      return response.data.items as Recipe[];
+    },
+  });
+
+  const thisMonth = new Date();
+  const recipesThisMonth = statRecipes.filter((recipe) => {
+    if (!recipe.createdAt) {
+      return false;
+    }
+
+    const createdAt = new Date(recipe.createdAt);
+    return createdAt.getMonth() === thisMonth.getMonth() && createdAt.getFullYear() === thisMonth.getFullYear();
+  }).length;
+  const quickRecipes = statRecipes.filter((recipe) => recipe.preparationTime <= 30).length;
+  const comfortRecipes = statRecipes.filter((recipe) =>
+    ['dinner', 'main course', 'indian', 'italian'].some((keyword) =>
+      `${recipe.category} ${recipe.cuisineType}`.toLowerCase().includes(keyword)
+    )
+  ).length;
+  const dessertRecipes = statRecipes.filter((recipe) => recipe.category.toLowerCase().includes('dessert')).length;
+  const categoryCounts = statRecipes.reduce<Record<string, number>>((counts, recipe) => {
+    counts[recipe.category] = (counts[recipe.category] || 0) + 1;
+    return counts;
+  }, {});
+  const topCategory = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Global';
+  const totalLikes = statRecipes.reduce((total, recipe) => total + (recipe.likesCount || 0), 0);
+  const mostLovedRecipe = [...statRecipes].sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0))[0]?.recipeName || 'New favorites';
+  const cuisineSpread = new Set(statRecipes.map((recipe) => recipe.cuisineType).filter(Boolean)).size;
+  const featuredCount = statRecipes.filter((recipe) => recipe.isFeatured).length;
+
+  const flavorCalendarStats = [
+    { icon: CalendarDays, label: 'New this month', value: recipesThisMonth || statRecipes.length, note: 'Fresh kitchen drops' },
+    { icon: Clock, label: 'Quick plates', value: quickRecipes, note: 'Ready in 30 minutes' },
+    { icon: Flame, label: 'Comfort picks', value: comfortRecipes, note: 'Dinner-ready ideas' },
+    { icon: Sparkles, label: 'Sweet moments', value: dessertRecipes, note: 'Dessert inspiration' },
+  ];
+
+  const tasteTrendStats = [
+    { icon: TrendingUp, label: 'Top category', value: topCategory, note: 'Most represented' },
+    { icon: Heart, label: 'Community likes', value: totalLikes, note: 'Across recent recipes' },
+    { icon: Globe2, label: 'Cuisine spread', value: cuisineSpread, note: 'Styles to explore' },
+    { icon: Crown, label: 'Featured picks', value: featuredCount, note: 'Curated by admins' },
+  ];
 
   return (
     <>
@@ -103,6 +151,69 @@ export default function HomePage() {
             {popular?.map((recipe) => (
               <RecipeCard key={recipe._id} recipe={recipe} compact />
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="shell">
+          <SectionHeading title="Flavor Calendar" subtitle="Season-ready cooking signals from the RecipeHub kitchen." />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {flavorCalendarStats.map((stat) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={stat.label}
+                  whileHover={{ y: -4 }}
+                  className="rounded-2xl border border-base-300 bg-base-100 p-6 shadow-soft"
+                >
+                  <span className="grid size-12 place-items-center rounded-full bg-emerald-50 text-brand-600">
+                    <Icon size={22} />
+                  </span>
+                  <p className="mt-5 text-sm font-semibold text-base-content/55">{stat.label}</p>
+                  <p className="mt-2 text-3xl font-extrabold">{stat.value}</p>
+                  <p className="mt-2 text-sm text-base-content/55">{stat.note}</p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="section bg-base-200">
+        <div className="shell grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+          <div>
+            <span className="eyebrow">Taste signals</span>
+            <h2 className="mt-4 text-4xl font-extrabold">Taste Trends</h2>
+            <p className="mt-4 max-w-xl text-base-content/65">
+              See what cooks are loving right now, from rising categories to the most-loved recipe momentum.
+            </p>
+            <div className="mt-7 rounded-2xl border border-base-300 bg-base-100 p-5">
+              <Leaf className="text-brand-600" size={26} />
+              <p className="mt-3 text-sm text-base-content/55">Most loved recipe</p>
+              <h3 className="mt-1 text-2xl font-bold">{mostLovedRecipe}</h3>
+            </div>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {tasteTrendStats.map((stat) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={stat.label}
+                  whileHover={{ y: -4 }}
+                  className="rounded-2xl border border-base-300 bg-base-100 p-6 shadow-soft"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="grid size-11 place-items-center rounded-full bg-brand-50 text-brand-600">
+                      <Icon size={21} />
+                    </span>
+                    <p className="text-right text-sm font-semibold text-base-content/50">{stat.label}</p>
+                  </div>
+                  <p className="mt-5 text-3xl font-extrabold">{stat.value}</p>
+                  <p className="mt-2 text-sm text-base-content/55">{stat.note}</p>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
