@@ -50,7 +50,9 @@ export type Payment = {
   userId?: Pick<User, '_id' | 'name' | 'email'>;
   amount: number;
   recipeId?: Recipe | null;
+  type?: 'premium' | 'recipe';
   transactionId: string;
+  checkoutSessionId?: string;
   paymentStatus: string;
   paidAt: string;
 };
