@@ -8,6 +8,7 @@ export type User = {
   role: Role;
   isBlocked?: boolean;
   isPremium?: boolean;
+  createdAt?: string;
 };
 
 export type Recipe = {
