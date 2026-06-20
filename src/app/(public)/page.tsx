@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { CalendarDays, ChefHat, Clock, Crown, Flame, Globe2, Heart, ShieldCheck, Sparkles, TrendingUp, Users, Utensils } from 'lucide-react';
+import { ChefHat, Crown, Flame, Globe2, Heart, ShieldCheck, TrendingUp, Users, Utensils } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Recipe } from '@/types';
 import { RecipeCard } from '@/components/recipes/recipe-card';
@@ -33,43 +34,37 @@ export default function HomePage() {
     },
   });
 
-  const { data: statRecipes = [] } = useQuery({
-    queryKey: ['home-stat-recipes'],
-    queryFn: async () => {
-      const response = await api.get('/recipes?limit=24');
-      return response.data.items as Recipe[];
-    },
-  });
-
-  const thisMonth = new Date();
-  const recipesThisMonth = statRecipes.filter((recipe) => {
-    if (!recipe.createdAt) {
-      return false;
-    }
-
-    const createdAt = new Date(recipe.createdAt);
-    return createdAt.getMonth() === thisMonth.getMonth() && createdAt.getFullYear() === thisMonth.getFullYear();
-  }).length;
-  const quickRecipes = statRecipes.filter((recipe) => recipe.preparationTime <= 30).length;
-  const comfortRecipes = statRecipes.filter((recipe) =>
-    ['dinner', 'main course', 'indian', 'italian'].some((keyword) =>
-      `${recipe.category} ${recipe.cuisineType}`.toLowerCase().includes(keyword)
-    )
-  ).length;
-  const dessertRecipes = statRecipes.filter((recipe) => recipe.category.toLowerCase().includes('dessert')).length;
-  const flavorCalendarStats = [
-    { icon: CalendarDays, label: 'New this month', value: recipesThisMonth || statRecipes.length, note: 'Fresh kitchen drops' },
-    { icon: Clock, label: 'Quick plates', value: quickRecipes, note: 'Ready in 30 minutes' },
-    { icon: Flame, label: 'Comfort picks', value: comfortRecipes, note: 'Dinner-ready ideas' },
-    { icon: Sparkles, label: 'Sweet moments', value: dessertRecipes, note: 'Dessert inspiration' },
-  ];
-
   const tasteTrendStats = [
-    { recipe: 'Creamy Garlic Pasta', growth: '32%' },
-    { recipe: 'Korean Corn Cheese', growth: '21%' },
-    { recipe: 'Matcha Desserts', growth: '18%' },
-    { recipe: 'Chicken Biryani', growth: '16%' },
+    { icon: '🍝', recipe: 'Creamy Garlic Pasta', growth: '32%' },
+    { icon: '🌽', recipe: 'Korean Corn Cheese', growth: '21%' },
+    { icon: '🍵', recipe: 'Matcha Desserts', growth: '18%' },
+    { icon: '🍛', recipe: 'Chicken Biryani', growth: '16%' },
   ];
+
+  const cravingItems = [
+    { icon: '🍜', label: 'Comfort Food', tone: 'bg-amber-50 text-amber-700' },
+    { icon: '🥗', label: 'Healthy Meals', tone: 'bg-emerald-50 text-emerald-700' },
+    { icon: '🍔', label: 'Fast Food', tone: 'bg-orange-50 text-orange-700' },
+    { icon: '🍰', label: 'Desserts', tone: 'bg-rose-50 text-rose-700' },
+    { icon: '🥩', label: 'High Protein Recipes', tone: 'bg-sky-50 text-sky-700' },
+    { icon: '🌶️', label: 'Spicy Bowls', tone: 'bg-red-50 text-red-700' },
+    { icon: '🍤', label: 'Seafood Picks', tone: 'bg-cyan-50 text-cyan-700' },
+    { icon: '🥞', label: 'Breakfast Bites', tone: 'bg-yellow-50 text-yellow-700' },
+    { icon: '🥑', label: 'Vegan Plates', tone: 'bg-lime-50 text-lime-700' },
+    { icon: '🍕', label: 'Party Snacks', tone: 'bg-orange-50 text-orange-700' },
+    { icon: '🥘', label: 'Family Dinners', tone: 'bg-violet-50 text-violet-700' },
+  ];
+  const [cravingIndex, setCravingIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCravingIndex((current) => (current + 1) % cravingItems.length);
+    }, 2400);
+
+    return () => window.clearInterval(timer);
+  }, [cravingItems.length]);
+
+  const visibleCravings = Array.from({ length: 5 }, (_, offset) => cravingItems[(cravingIndex + offset) % cravingItems.length]);
 
   return (
     <>
@@ -146,75 +141,74 @@ export default function HomePage() {
       </section>
 
       <section className="section">
-        <div className="shell">
-          <SectionHeading title="Flavor Calendar" subtitle="Season-ready cooking signals from the RecipeHub kitchen." />
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {flavorCalendarStats.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <motion.div
-                  key={stat.label}
-                  whileHover={{ y: -4 }}
-                  className="rounded-2xl border border-base-300 bg-base-100 p-6 shadow-soft"
-                >
-                  <span className="grid size-12 place-items-center rounded-full bg-emerald-50 text-brand-600">
-                    <Icon size={22} />
-                  </span>
-                  <p className="mt-5 text-sm font-semibold text-base-content/55">{stat.label}</p>
-                  <p className="mt-2 text-3xl font-extrabold">{stat.value}</p>
-                  <p className="mt-2 text-sm text-base-content/55">{stat.note}</p>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="section bg-base-200">
-        <div className="shell grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
-          <div>
-            <span className="eyebrow">Taste signals</span>
-            <h2 className="mt-4 text-4xl font-extrabold">Taste Trends</h2>
-            <p className="mt-4 max-w-xl text-base-content/65">
-              Community Favorites This Week highlights the recipes gaining the most attention from home cooks.
-            </p>
-            <div className="mt-7 rounded-2xl border border-base-300 bg-base-100 p-5 shadow-soft">
-              <TrendingUp className="text-brand-600" size={28} />
-              <p className="mt-3 text-sm text-base-content/55">Weekly momentum</p>
-              <h3 className="mt-1 text-2xl font-bold">Community Favorites</h3>
-              <p className="mt-2 text-sm text-base-content/55">Tracked from saves, likes, and recent browsing activity.</p>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-soft">
-            <div className="flex items-center justify-between border-b border-base-300 pb-4">
+        <div className="shell grid gap-6 lg:grid-cols-2">
+          <div className="rounded-2xl border border-base-300 bg-base-100 p-6 shadow-soft">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-base-content/45">This Week</p>
-                <h3 className="mt-1 text-2xl font-bold">Community Favorites</h3>
+                <h2 className="text-2xl font-bold">Taste Trends This Week</h2>
+                <p className="mt-2 text-sm text-base-content/60">See what recipes are trending</p>
               </div>
-              <span className="grid size-12 place-items-center rounded-full bg-brand-50 text-brand-600">
-                <Heart size={22} fill="currentColor" />
-              </span>
+              <Flame className="text-orange-500" size={24} fill="currentColor" />
             </div>
             <div className="mt-2 divide-y divide-base-300">
               {tasteTrendStats.map((stat, index) => (
                 <motion.div
                   key={stat.recipe}
                   whileHover={{ x: 4 }}
-                  className="flex items-center justify-between gap-5 py-5"
+                  className="flex items-center justify-between gap-5 py-4"
                 >
                   <div className="flex items-center gap-4">
-                    <span className="grid size-10 place-items-center rounded-full bg-base-200 text-sm font-bold text-base-content/60">
-                      {index + 1}
+                    <span className="grid size-12 place-items-center rounded-xl bg-base-200 text-2xl">
+                      {stat.icon}
                     </span>
                     <div>
                       <p className="font-bold">{stat.recipe}</p>
-                      <p className="text-sm text-base-content/50">Trending recipe</p>
+                      <p className="text-sm text-base-content/50">Rank #{index + 1}</p>
                     </div>
                   </div>
-                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-700">
-                    Up {stat.growth}
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-700">
+                    <TrendingUp size={15} />
+                    {stat.growth}
                   </span>
                 </motion.div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-base-300 bg-base-100 p-6 shadow-soft">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold">Community Cravings</h2>
+                <p className="mt-2 text-sm text-base-content/60">Most loved food styles</p>
+              </div>
+              <span className="grid size-11 place-items-center rounded-full bg-rose-50 text-rose-500">
+                <Heart size={22} fill="currentColor" />
+              </span>
+            </div>
+            <motion.div
+              key={cravingIndex}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3"
+            >
+              {visibleCravings.map((item) => (
+                <div key={`${item.label}-${cravingIndex}`} className={`rounded-2xl p-4 text-center ${item.tone}`}>
+                  <span className="mx-auto grid size-14 place-items-center rounded-full bg-white/70 text-3xl shadow-sm">
+                    {item.icon}
+                  </span>
+                  <p className="mt-3 text-sm font-extrabold leading-tight">{item.label}</p>
+                </div>
+              ))}
+            </motion.div>
+            <div className="mt-5 flex justify-center gap-2">
+              {Array.from({ length: 4 }, (_, index) => (
+                <span
+                  key={index}
+                  className={`h-2 rounded-full transition-all ${
+                    index === cravingIndex % 4 ? 'w-6 bg-brand-600' : 'w-2 bg-base-300'
+                  }`}
+                />
               ))}
             </div>
           </div>
