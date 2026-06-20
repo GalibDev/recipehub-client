@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { CalendarDays, ChefHat, Clock, Crown, Flame, Globe2, Heart, Leaf, ShieldCheck, Sparkles, TrendingUp, Users, Utensils } from 'lucide-react';
+import { CalendarDays, ChefHat, Clock, Crown, Flame, Globe2, Heart, ShieldCheck, Sparkles, TrendingUp, Users, Utensils } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Recipe } from '@/types';
 import { RecipeCard } from '@/components/recipes/recipe-card';
@@ -57,16 +57,6 @@ export default function HomePage() {
     )
   ).length;
   const dessertRecipes = statRecipes.filter((recipe) => recipe.category.toLowerCase().includes('dessert')).length;
-  const categoryCounts = statRecipes.reduce<Record<string, number>>((counts, recipe) => {
-    counts[recipe.category] = (counts[recipe.category] || 0) + 1;
-    return counts;
-  }, {});
-  const topCategory = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Global';
-  const totalLikes = statRecipes.reduce((total, recipe) => total + (recipe.likesCount || 0), 0);
-  const mostLovedRecipe = [...statRecipes].sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0))[0]?.recipeName || 'New favorites';
-  const cuisineSpread = new Set(statRecipes.map((recipe) => recipe.cuisineType).filter(Boolean)).size;
-  const featuredCount = statRecipes.filter((recipe) => recipe.isFeatured).length;
-
   const flavorCalendarStats = [
     { icon: CalendarDays, label: 'New this month', value: recipesThisMonth || statRecipes.length, note: 'Fresh kitchen drops' },
     { icon: Clock, label: 'Quick plates', value: quickRecipes, note: 'Ready in 30 minutes' },
@@ -75,10 +65,10 @@ export default function HomePage() {
   ];
 
   const tasteTrendStats = [
-    { icon: TrendingUp, label: 'Top category', value: topCategory, note: 'Most represented' },
-    { icon: Heart, label: 'Community likes', value: totalLikes, note: 'Across recent recipes' },
-    { icon: Globe2, label: 'Cuisine spread', value: cuisineSpread, note: 'Styles to explore' },
-    { icon: Crown, label: 'Featured picks', value: featuredCount, note: 'Curated by admins' },
+    { recipe: 'Creamy Garlic Pasta', growth: '32%' },
+    { recipe: 'Korean Corn Cheese', growth: '21%' },
+    { recipe: 'Matcha Desserts', growth: '18%' },
+    { recipe: 'Chicken Biryani', growth: '16%' },
   ];
 
   return (
@@ -186,34 +176,47 @@ export default function HomePage() {
             <span className="eyebrow">Taste signals</span>
             <h2 className="mt-4 text-4xl font-extrabold">Taste Trends</h2>
             <p className="mt-4 max-w-xl text-base-content/65">
-              See what cooks are loving right now, from rising categories to the most-loved recipe momentum.
+              Community Favorites This Week highlights the recipes gaining the most attention from home cooks.
             </p>
-            <div className="mt-7 rounded-2xl border border-base-300 bg-base-100 p-5">
-              <Leaf className="text-brand-600" size={26} />
-              <p className="mt-3 text-sm text-base-content/55">Most loved recipe</p>
-              <h3 className="mt-1 text-2xl font-bold">{mostLovedRecipe}</h3>
+            <div className="mt-7 rounded-2xl border border-base-300 bg-base-100 p-5 shadow-soft">
+              <TrendingUp className="text-brand-600" size={28} />
+              <p className="mt-3 text-sm text-base-content/55">Weekly momentum</p>
+              <h3 className="mt-1 text-2xl font-bold">Community Favorites</h3>
+              <p className="mt-2 text-sm text-base-content/55">Tracked from saves, likes, and recent browsing activity.</p>
             </div>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2">
-            {tasteTrendStats.map((stat) => {
-              const Icon = stat.icon;
-              return (
+          <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-soft">
+            <div className="flex items-center justify-between border-b border-base-300 pb-4">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-base-content/45">This Week</p>
+                <h3 className="mt-1 text-2xl font-bold">Community Favorites</h3>
+              </div>
+              <span className="grid size-12 place-items-center rounded-full bg-brand-50 text-brand-600">
+                <Heart size={22} fill="currentColor" />
+              </span>
+            </div>
+            <div className="mt-2 divide-y divide-base-300">
+              {tasteTrendStats.map((stat, index) => (
                 <motion.div
-                  key={stat.label}
-                  whileHover={{ y: -4 }}
-                  className="rounded-2xl border border-base-300 bg-base-100 p-6 shadow-soft"
+                  key={stat.recipe}
+                  whileHover={{ x: 4 }}
+                  className="flex items-center justify-between gap-5 py-5"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="grid size-11 place-items-center rounded-full bg-brand-50 text-brand-600">
-                      <Icon size={21} />
+                  <div className="flex items-center gap-4">
+                    <span className="grid size-10 place-items-center rounded-full bg-base-200 text-sm font-bold text-base-content/60">
+                      {index + 1}
                     </span>
-                    <p className="text-right text-sm font-semibold text-base-content/50">{stat.label}</p>
+                    <div>
+                      <p className="font-bold">{stat.recipe}</p>
+                      <p className="text-sm text-base-content/50">Trending recipe</p>
+                    </div>
                   </div>
-                  <p className="mt-5 text-3xl font-extrabold">{stat.value}</p>
-                  <p className="mt-2 text-sm text-base-content/55">{stat.note}</p>
+                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-700">
+                    Up {stat.growth}
+                  </span>
                 </motion.div>
-              );
-            })}
+              ))}
+            </div>
           </div>
         </div>
       </section>
