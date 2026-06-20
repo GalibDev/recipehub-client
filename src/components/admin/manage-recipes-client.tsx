@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { BookOpenText, Heart, Plus, Star, Trash2 } from 'lucide-react';
+import { BookOpenText, Heart, Pencil, Plus, Star, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { api, messageOf } from '@/lib/api';
 import { cn, imageOrFallback } from '@/lib/utils';
@@ -146,6 +146,13 @@ export function ManageRecipesClient() {
                           <Star size={17} fill="currentColor" />
                           {recipe.isFeatured ? 'Unfeature' : 'Feature'}
                         </button>
+                        <Link
+                          href={`/admin/recipes/${recipe._id}/edit`}
+                          className="inline-flex h-11 items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-5 text-sm font-bold text-orange-600 transition hover:bg-orange-100"
+                        >
+                          <Pencil size={17} />
+                          Edit
+                        </Link>
                         <button
                           onClick={() => deleteRecipe(recipe._id)}
                           className="inline-flex h-11 items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-5 text-sm font-bold text-rose-600 transition hover:bg-rose-100"

@@ -19,7 +19,7 @@ type RecipeFormValues = {
   instructions: string;
 };
 
-export function RecipeForm({ recipe }: { recipe?: Recipe }) {
+export function RecipeForm({ recipe, redirectTo = '/dashboard/recipes' }: { recipe?: Recipe; redirectTo?: string }) {
   const router = useRouter();
   const editing = Boolean(recipe);
   const {
@@ -63,7 +63,7 @@ export function RecipeForm({ recipe }: { recipe?: Recipe }) {
       }
 
       toast.success(editing ? 'Recipe updated' : 'Recipe published');
-      router.push('/dashboard/recipes');
+      router.push(redirectTo);
       router.refresh();
     } catch (error) {
       toast.error(messageOf(error));
