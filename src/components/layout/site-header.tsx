@@ -15,6 +15,7 @@ import { ThemeToggle } from './theme-toggle';
 const links = [
   { href: '/', label: 'Home' },
   { href: '/recipes', label: 'Browse Recipes' },
+  { href: '/dashboard', label: 'Dashboard' },
   { href: '/#about', label: 'About Us' },
 ];
 
