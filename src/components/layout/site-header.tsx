@@ -40,8 +40,10 @@ export function SiteHeader({ initialUser }: { initialUser?: User | null }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-base-300 bg-base-100/90 backdrop-blur-xl">
-      <div className="shell flex h-20 items-center gap-4">
-        <Logo />
+      <div className="shell flex h-20 items-center gap-3 sm:gap-4">
+        <div className="min-w-0 flex-1 lg:flex-none">
+          <Logo />
+        </div>
         <nav className="ml-6 hidden items-center gap-7 lg:flex">
           {links.map((link) => (
             <Link
@@ -111,7 +113,7 @@ export function SiteHeader({ initialUser }: { initialUser?: User | null }) {
             Login
           </Link>
         )}
-        <button className="btn btn-ghost btn-circle lg:hidden" onClick={() => setMenuOpen((value) => !value)}>
+        <button className="btn btn-ghost btn-circle shrink-0 lg:hidden" onClick={() => setMenuOpen((value) => !value)}>
           {menuOpen ? <X /> : <Menu />}
         </button>
       </div>
