@@ -8,7 +8,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { api, messageOf } from '@/lib/api';
 import { reportReasons } from '@/lib/constants';
-import { formatCurrency, avatarFromName, imageOrFallback } from '@/lib/utils';
+import { formatCurrency, avatarFromName, cn, imageOrFallback } from '@/lib/utils';
 import { ErrorView } from '@/components/shared/error-view';
 import { LoadingView } from '@/components/shared/loading-view';
 import { useAuth } from '@/providers';
@@ -38,7 +38,7 @@ export default function RecipeDetailsPage() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(['recipe', params.id], (current: Recipe | undefined) =>
-        current ? { ...current, likesCount: data.likesCount } : current
+        current ? { ...current, likesCount: data.likesCount, liked: data.liked } : current
       );
       toast.success(data.liked ? 'Recipe liked' : 'Like removed');
     },
@@ -164,9 +164,18 @@ export default function RecipeDetailsPage() {
             </button>
           </div>
           <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <button onClick={() => ensureUser(() => likeMutation.mutate())} className="btn btn-outline">
-              <Heart size={18} />
-              Like
+            <button
+              onClick={() => ensureUser(() => likeMutation.mutate())}
+              disabled={likeMutation.isPending}
+              className={cn(
+                'btn border-2 font-bold',
+                recipe.liked
+                  ? 'border-rose-500 bg-rose-50 text-rose-600 hover:bg-rose-100'
+                  : 'btn-outline'
+              )}
+            >
+              <Heart size={18} fill={recipe.liked ? 'currentColor' : 'none'} />
+              {recipe.liked ? 'Liked' : 'Like'}
             </button>
             <button onClick={toggleFavorite} className="btn btn-outline">
               <Star size={18} />
