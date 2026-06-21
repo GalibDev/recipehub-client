@@ -72,9 +72,9 @@ export default function HomePage() {
   ];
 
   const heroStats = [
-    { icon: Users, value: '10K+', label: 'Happy Users', className: 'left-[62%] top-[7%]' },
-    { icon: Utensils, value: '25K+', label: 'Recipe Lovers', className: 'left-[1%] top-[55%]' },
-    { icon: Star, value: '4.8', label: 'User Rating', className: 'left-[65%] top-[70%]' },
+    { icon: Users, value: '10K+', label: 'Happy Users', className: 'left-[55%] top-[8%] sm:left-[62%] sm:top-[7%]' },
+    { icon: Utensils, value: '25K+', label: 'Recipe Lovers', className: 'left-[0%] top-[55%] sm:left-[1%]' },
+    { icon: Star, value: '4.8', label: 'User Rating', className: 'left-[55%] top-[72%] sm:left-[65%] sm:top-[70%]' },
   ];
 
   const heroLeaves = [
@@ -108,17 +108,17 @@ export default function HomePage() {
   return (
     <>
       <section className="hero-glow overflow-hidden">
-        <div className="shell grid min-h-[620px] items-center gap-10 py-16 lg:grid-cols-2">
+        <div className="shell grid min-h-[560px] items-center gap-8 py-10 sm:py-16 lg:min-h-[620px] lg:grid-cols-2">
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
             <span className="eyebrow">
               Cook <span>*</span> Share <span>*</span> Inspire
             </span>
-            <h1 className="mt-6 text-5xl font-extrabold leading-[1.08] sm:text-6xl">
+            <h1 className="mt-5 text-4xl font-extrabold leading-[1.08] sm:mt-6 sm:text-6xl">
               Share Recipes.
               <br />
               <span className="text-brand-600">Inspire</span> the World.
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-base-content/65">
+            <p className="mt-5 max-w-xl text-base leading-7 text-base-content/65 sm:mt-6 sm:text-lg sm:leading-8">
               Join a thriving cooking community to discover beautiful recipes, save your favorites, and unlock premium
               culinary content.
             </p>
@@ -135,7 +135,7 @@ export default function HomePage() {
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.75, delay: 0.15 }}
-            className="relative mx-auto min-h-[430px] w-full max-w-xl sm:min-h-[520px]"
+            className="relative mx-auto min-h-[360px] w-full max-w-xl sm:min-h-[520px]"
           >
             <div className="absolute inset-10 rounded-full bg-amber-200/25 blur-3xl" />
             {heroDots.map((position, index) => (
@@ -151,13 +151,13 @@ export default function HomePage() {
                 key={position}
                 animate={{ y: [0, -10, 0], rotate: [0, index % 2 ? 8 : -8, 0] }}
                 transition={{ duration: 3.4 + index * 0.25, repeat: Infinity, ease: 'easeInOut' }}
-                className={`absolute z-20 grid size-10 place-items-center rounded-full bg-white/75 text-brand-700 shadow-sm backdrop-blur ${position}`}
+                className={`absolute z-20 grid size-8 place-items-center rounded-full bg-white/75 text-brand-700 shadow-sm backdrop-blur sm:size-10 ${position}`}
               >
-                <Leaf size={22} fill="currentColor" />
+                <Leaf className="size-5 sm:size-[22px]" fill="currentColor" />
               </motion.span>
             ))}
             <img
-              className="absolute left-1/2 top-1/2 z-10 aspect-square w-[82%] -translate-x-1/2 -translate-y-1/2 rounded-full border-[14px] border-white object-cover shadow-2xl"
+              className="absolute left-1/2 top-1/2 z-10 aspect-square w-[78%] -translate-x-1/2 -translate-y-1/2 rounded-full border-[10px] border-white object-cover shadow-2xl sm:w-[82%] sm:border-[14px]"
               src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=90"
               alt="Hero dish"
             />
@@ -173,14 +173,14 @@ export default function HomePage() {
                     key={stat.label}
                     animate={{ rotate: -360 }}
                     transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
-                    className={`absolute flex min-w-32 items-center gap-2 rounded-2xl border border-base-300 bg-base-100/95 p-3 shadow-soft backdrop-blur sm:min-w-36 sm:gap-3 sm:p-4 ${stat.className}`}
+                    className={`absolute flex min-w-28 items-center gap-2 rounded-2xl border border-base-300 bg-base-100/95 p-2.5 shadow-soft backdrop-blur sm:min-w-36 sm:gap-3 sm:p-4 ${stat.className}`}
                   >
-                    <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
-                      <StatIcon size={22} fill={stat.label === 'User Rating' ? 'currentColor' : 'none'} />
+                    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600 sm:size-11">
+                      <StatIcon className="size-5 sm:size-[22px]" fill={stat.label === 'User Rating' ? 'currentColor' : 'none'} />
                     </span>
                     <span>
                       <b className="block text-base leading-none sm:text-lg">{stat.value}</b>
-                      <span className="text-xs font-medium text-base-content/55">{stat.label}</span>
+                      <span className="text-[11px] font-medium text-base-content/55 sm:text-xs">{stat.label}</span>
                     </span>
                   </motion.div>
                 );

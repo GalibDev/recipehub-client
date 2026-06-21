@@ -122,10 +122,10 @@ export function DashboardShell({
           <button className="btn btn-ghost btn-circle lg:hidden" onClick={() => setOpen(true)}>
             <Menu />
           </button>
-          <div className="ml-auto flex items-center gap-4">
+          <div className="ml-auto flex min-w-0 items-center gap-3 sm:gap-4">
             <ThemeToggle />
-            <div className="text-right">
-              <p className="flex items-center justify-end gap-1 text-sm font-bold">
+            <div className="min-w-0 text-right">
+              <p className="flex max-w-36 items-center justify-end gap-1 truncate text-sm font-bold sm:max-w-none">
                 {currentUser.name}
                 {currentUser.isPremium ? <BadgeCheck className="text-amber-500" size={15} /> : null}
               </p>

@@ -123,7 +123,7 @@ export default function RecipeDetailsPage() {
         </div>
         <div className="py-3">
           <span className="badge badge-success badge-outline">{recipe.category}</span>
-          <h1 className="mt-4 text-4xl font-extrabold sm:text-5xl">{recipe.recipeName}</h1>
+          <h1 className="mt-4 text-3xl font-extrabold sm:text-5xl">{recipe.recipeName}</h1>
           <div className="mt-5 flex items-center gap-3">
             <img className="size-9 rounded-full" src={avatarFromName(recipe.authorName)} alt={recipe.authorName} />
             <p className="text-sm">
@@ -134,7 +134,7 @@ export default function RecipeDetailsPage() {
           <p className="mt-5 leading-7 text-base-content/65">
             A beautifully crafted recipe designed to turn everyday cooking into something memorable.
           </p>
-          <div className="mt-6 grid grid-cols-4 gap-2 rounded-3xl border border-base-300 p-4 text-center text-sm">
+          <div className="mt-6 grid grid-cols-2 gap-3 rounded-3xl border border-base-300 p-4 text-center text-sm sm:grid-cols-4">
             <div>
               <Globe2 className="mx-auto mb-2 text-brand-600" size={19} />
               <b>{recipe.cuisineType}</b>
@@ -156,7 +156,7 @@ export default function RecipeDetailsPage() {
               <small className="block opacity-50">Likes</small>
             </div>
           </div>
-          <div className="mt-7 flex items-center justify-between">
+          <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
             <b className="text-2xl">{formatCurrency(recipe.price || 2.99)}</b>
             <button onClick={purchaseRecipe} className="btn-brand">
               <ShoppingBag size={18} />
