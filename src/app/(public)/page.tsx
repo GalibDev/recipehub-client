@@ -35,10 +35,26 @@ export default function HomePage() {
   });
 
   const tasteTrendStats = [
-    { icon: '🍝', recipe: 'Creamy Garlic Pasta', growth: '32%' },
-    { icon: '🌽', recipe: 'Korean Corn Cheese', growth: '21%' },
-    { icon: '🍵', recipe: 'Matcha Desserts', growth: '18%' },
-    { icon: '🍛', recipe: 'Chicken Biryani', growth: '16%' },
+    {
+      image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=200&q=80',
+      recipe: 'Creamy Garlic Pasta',
+      growth: '32%',
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=200&q=80',
+      recipe: 'Korean Corn Cheese',
+      growth: '21%',
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=200&q=80',
+      recipe: 'Matcha Desserts',
+      growth: '18%',
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1563379091339-03246963d4f6?auto=format&fit=crop&w=200&q=80',
+      recipe: 'Chicken Biryani',
+      growth: '16%',
+    },
   ];
 
   const cravingItems = [
@@ -64,7 +80,7 @@ export default function HomePage() {
     return () => window.clearInterval(timer);
   }, [cravingItems.length]);
 
-  const visibleCravings = Array.from({ length: 5 }, (_, offset) => cravingItems[(cravingIndex + offset) % cravingItems.length]);
+  const visibleCravings = Array.from({ length: 4 }, (_, offset) => cravingItems[(cravingIndex + offset) % cravingItems.length]);
 
   return (
     <>
@@ -72,7 +88,7 @@ export default function HomePage() {
         <div className="shell grid min-h-[620px] items-center gap-10 py-16 lg:grid-cols-2">
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
             <span className="eyebrow">
-              Cook <span>•</span> Share <span>•</span> Inspire
+              Cook <span>*</span> Share <span>*</span> Inspire
             </span>
             <h1 className="mt-6 text-5xl font-extrabold leading-[1.08] sm:text-6xl">
               Share Recipes.
@@ -158,9 +174,7 @@ export default function HomePage() {
                   className="flex items-center justify-between gap-5 py-4"
                 >
                   <div className="flex items-center gap-4">
-                    <span className="grid size-12 place-items-center rounded-xl bg-base-200 text-2xl">
-                      {stat.icon}
-                    </span>
+                    <img className="size-12 rounded-xl object-cover shadow-sm" src={stat.image} alt={stat.recipe} />
                     <div>
                       <p className="font-bold">{stat.recipe}</p>
                       <p className="text-sm text-base-content/50">Rank #{index + 1}</p>
@@ -187,10 +201,10 @@ export default function HomePage() {
             </div>
             <motion.div
               key={cravingIndex}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35 }}
-              className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3"
+              initial={{ opacity: 0, x: -34 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.45, ease: 'easeOut' }}
+              className="mt-6 grid grid-cols-2 gap-4"
             >
               {visibleCravings.map((item) => (
                 <div key={`${item.label}-${cravingIndex}`} className={`rounded-2xl p-4 text-center ${item.tone}`}>
