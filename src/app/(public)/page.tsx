@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { ChefHat, Crown, Flame, Globe2, Heart, ShieldCheck, TrendingUp, Users, Utensils } from 'lucide-react';
+import { Crown, Flame, Globe2, Heart, Leaf, ShieldCheck, Star, TrendingUp, Users, Utensils } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Recipe } from '@/types';
 import { RecipeCard } from '@/components/recipes/recipe-card';
@@ -58,18 +58,41 @@ export default function HomePage() {
   ];
 
   const cravingItems = [
-    { icon: '🍜', label: 'Comfort Food', tone: 'bg-amber-50 text-amber-700' },
-    { icon: '🥗', label: 'Healthy Meals', tone: 'bg-emerald-50 text-emerald-700' },
-    { icon: '🍔', label: 'Fast Food', tone: 'bg-orange-50 text-orange-700' },
-    { icon: '🍰', label: 'Desserts', tone: 'bg-rose-50 text-rose-700' },
-    { icon: '🥩', label: 'High Protein Recipes', tone: 'bg-sky-50 text-sky-700' },
-    { icon: '🌶️', label: 'Spicy Bowls', tone: 'bg-red-50 text-red-700' },
-    { icon: '🍤', label: 'Seafood Picks', tone: 'bg-cyan-50 text-cyan-700' },
-    { icon: '🥞', label: 'Breakfast Bites', tone: 'bg-yellow-50 text-yellow-700' },
-    { icon: '🥑', label: 'Vegan Plates', tone: 'bg-lime-50 text-lime-700' },
-    { icon: '🍕', label: 'Party Snacks', tone: 'bg-orange-50 text-orange-700' },
-    { icon: '🥘', label: 'Family Dinners', tone: 'bg-violet-50 text-violet-700' },
+    { icon: '\u{1F35C}', label: 'Comfort Food', tone: 'bg-amber-50 text-amber-700' },
+    { icon: '\u{1F957}', label: 'Healthy Meals', tone: 'bg-emerald-50 text-emerald-700' },
+    { icon: '\u{1F354}', label: 'Fast Food', tone: 'bg-orange-50 text-orange-700' },
+    { icon: '\u{1F370}', label: 'Desserts', tone: 'bg-rose-50 text-rose-700' },
+    { icon: '\u{1F969}', label: 'High Protein Recipes', tone: 'bg-sky-50 text-sky-700' },
+    { icon: '\u{1F336}\u{FE0F}', label: 'Spicy Bowls', tone: 'bg-red-50 text-red-700' },
+    { icon: '\u{1F364}', label: 'Seafood Picks', tone: 'bg-cyan-50 text-cyan-700' },
+    { icon: '\u{1F95E}', label: 'Breakfast Bites', tone: 'bg-yellow-50 text-yellow-700' },
+    { icon: '\u{1F951}', label: 'Vegan Plates', tone: 'bg-lime-50 text-lime-700' },
+    { icon: '\u{1F355}', label: 'Party Snacks', tone: 'bg-orange-50 text-orange-700' },
+    { icon: '\u{1F958}', label: 'Family Dinners', tone: 'bg-violet-50 text-violet-700' },
   ];
+
+  const heroStats = [
+    { icon: Users, value: '10K+', label: 'Happy Users', className: 'left-[62%] top-[7%]' },
+    { icon: Utensils, value: '25K+', label: 'Recipe Lovers', className: 'left-[1%] top-[55%]' },
+    { icon: Star, value: '4.8', label: 'User Rating', className: 'left-[65%] top-[70%]' },
+  ];
+
+  const heroLeaves = [
+    'left-[16%] top-[6%] -rotate-12',
+    'left-[6%] top-[37%] rotate-12',
+    'right-[5%] top-[28%] rotate-[28deg]',
+    'right-[16%] bottom-[7%] -rotate-[18deg]',
+    'left-[36%] bottom-[3%] rotate-[20deg]',
+  ];
+
+  const heroDots = [
+    'left-[28%] top-[18%]',
+    'left-[14%] top-[68%]',
+    'right-[12%] top-[15%]',
+    'right-[1%] top-[52%]',
+    'left-[49%] bottom-[7%]',
+  ];
+
   const [cravingIndex, setCravingIndex] = useState(0);
 
   useEffect(() => {
@@ -112,24 +135,57 @@ export default function HomePage() {
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.75, delay: 0.15 }}
-            className="relative mx-auto w-full max-w-xl"
+            className="relative mx-auto min-h-[430px] w-full max-w-xl sm:min-h-[520px]"
           >
-            <div className="absolute -inset-8 rounded-full bg-amber-200/20 blur-3xl" />
+            <div className="absolute inset-10 rounded-full bg-amber-200/25 blur-3xl" />
+            {heroDots.map((position, index) => (
+              <motion.span
+                key={position}
+                animate={{ scale: [0.85, 1.2, 0.85], opacity: [0.35, 0.95, 0.35] }}
+                transition={{ duration: 2.6, delay: index * 0.25, repeat: Infinity, ease: 'easeInOut' }}
+                className={`absolute z-10 size-2 rounded-full bg-amber-400 ${position}`}
+              />
+            ))}
+            {heroLeaves.map((position, index) => (
+              <motion.span
+                key={position}
+                animate={{ y: [0, -10, 0], rotate: [0, index % 2 ? 8 : -8, 0] }}
+                transition={{ duration: 3.4 + index * 0.25, repeat: Infinity, ease: 'easeInOut' }}
+                className={`absolute z-20 grid size-10 place-items-center rounded-full bg-white/75 text-brand-700 shadow-sm backdrop-blur ${position}`}
+              >
+                <Leaf size={22} fill="currentColor" />
+              </motion.span>
+            ))}
             <img
-              className="relative aspect-square w-full rounded-full border-[14px] border-white object-cover shadow-2xl"
+              className="absolute left-1/2 top-1/2 z-10 aspect-square w-[82%] -translate-x-1/2 -translate-y-1/2 rounded-full border-[14px] border-white object-cover shadow-2xl"
               src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=90"
               alt="Hero dish"
             />
-            <div className="absolute -left-3 top-1/2 rounded-2xl border border-base-300 bg-base-100 p-4 shadow-soft">
-              <Users className="mb-1 text-brand-600" />
-              <b>25K+</b>
-              <p className="text-xs opacity-60">Recipe lovers</p>
-            </div>
-            <div className="absolute right-0 top-12 rounded-2xl border border-base-300 bg-base-100 p-4 shadow-soft">
-              <ChefHat className="mb-1 text-brand-600" />
-              <b>10K+</b>
-              <p className="text-xs opacity-60">Happy cooks</p>
-            </div>
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-2 z-30"
+            >
+              {heroStats.map((stat) => {
+                const StatIcon = stat.icon;
+                return (
+                  <motion.div
+                    key={stat.label}
+                    animate={{ rotate: -360 }}
+                    transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+                    className={`absolute flex min-w-32 items-center gap-2 rounded-2xl border border-base-300 bg-base-100/95 p-3 shadow-soft backdrop-blur sm:min-w-36 sm:gap-3 sm:p-4 ${stat.className}`}
+                  >
+                    <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
+                      <StatIcon size={22} fill={stat.label === 'User Rating' ? 'currentColor' : 'none'} />
+                    </span>
+                    <span>
+                      <b className="block text-base leading-none sm:text-lg">{stat.value}</b>
+                      <span className="text-xs font-medium text-base-content/55">{stat.label}</span>
+                    </span>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
           </motion.div>
         </div>
       </section>
