@@ -31,7 +31,7 @@ export function AuthFormInner({
   const router = useRouter();
   const { setUser } = useAuth();
   const [googleEnabled, setGoogleEnabled] = useState(false);
-  const next = nextPath || '/dashboard';
+  const next = nextPath || '/';
   const {
     register,
     handleSubmit,
@@ -44,10 +44,7 @@ export function AuthFormInner({
       setUser(response.data.user);
       toast.success(registerMode ? 'Welcome to RecipeHub!' : 'Welcome back!');
 
-      const destination =
-        next || (response.data.user.role === 'admin' ? '/admin' : '/dashboard');
-
-      router.replace(destination);
+      router.replace(next);
       router.refresh();
     } catch (error) {
       toast.error(messageOf(error));

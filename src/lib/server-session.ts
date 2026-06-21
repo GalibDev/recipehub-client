@@ -35,6 +35,6 @@ export async function redirectIfAuthenticated() {
   const user = await getServerSession();
 
   if (user) {
-    redirect(user.role === 'admin' ? '/admin' : '/dashboard');
+    redirect('/');
   }
 }

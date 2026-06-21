@@ -17,7 +17,7 @@ export function AuthBridgeClient() {
       .post('/auth/exchange')
       .then((response) => {
         setUser(response.data.user);
-        router.replace(searchParams.get('next') || '/dashboard');
+        router.replace(searchParams.get('next') || '/');
         router.refresh();
       })
       .catch((error) => {
