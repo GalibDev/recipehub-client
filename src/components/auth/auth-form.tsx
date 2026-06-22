@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Globe2, ChefHat, Crown } from 'lucide-react';
+import { Globe2, ChefHat, Crown, Eye, EyeOff } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { api, messageOf } from '@/lib/api';
@@ -31,6 +31,7 @@ export function AuthFormInner({
   const router = useRouter();
   const { setUser } = useAuth();
   const [googleEnabled, setGoogleEnabled] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const next = nextPath || '/';
   const {
     register,
@@ -128,14 +129,24 @@ export function AuthFormInner({
             </label>
             <label className="block">
               <span className="label-text-strong">Password</span>
-              <input
-                type="password"
-                className="input-clean"
-                {...register('password', {
-                  required: 'Password is required',
-                  minLength: { value: 6, message: 'Minimum 6 characters' },
-                })}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  className="input-clean pr-12"
+                  {...register('password', {
+                    required: 'Password is required',
+                    minLength: { value: 6, message: 'Minimum 6 characters' },
+                  })}
+                />
+                <button
+                  type="button"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="absolute right-3 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-base-content/55 transition hover:bg-base-200 hover:text-brand-600"
+                  onClick={() => setShowPassword((value) => !value)}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
               {errors.password ? <small className="mt-2 block text-error">{errors.password.message}</small> : null}
             </label>
             <button disabled={isSubmitting} className="btn-brand w-full">
