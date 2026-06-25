@@ -48,6 +48,22 @@ export default function RecipeDetailsPage() {
     },
   });
 
+  const ratingMutation = useMutation({
+    mutationFn: async (rating: number) => {
+      const response = await api.post(`/recipes/${params.id}/rating`, { rating });
+      return response.data as { ratingAverage: number; ratingCount: number; userRating: number };
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(['recipe', params.id], (current: Recipe | undefined) =>
+        current ? { ...current, ...data } : current
+      );
+      toast.success('Rating saved');
+    },
+    onError: (mutationError) => {
+      toast.error(messageOf(mutationError));
+    },
+  });
+
   function ensureUser(action: () => void) {
     if (!user) {
       router.push(`/login?next=${encodeURIComponent(`/recipes/${params.id}`)}`);
@@ -156,6 +172,30 @@ export default function RecipeDetailsPage() {
               <Heart className="mx-auto mb-2 text-brand-600" size={19} />
               <b>{recipe.likesCount}</b>
               <small className="block opacity-50">Likes</small>
+            </div>
+          </div>
+          <div className="mt-5 rounded-3xl border border-amber-200 bg-amber-50 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="font-bold text-amber-800">Rate this recipe</p>
+                <p className="text-sm text-amber-700/70">
+                  Average {recipe.ratingAverage?.toFixed(1) || '0.0'} from {recipe.ratingCount || 0} ratings
+                </p>
+              </div>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <button
+                    key={rating}
+                    type="button"
+                    disabled={ratingMutation.isPending}
+                    onClick={() => ensureUser(() => ratingMutation.mutate(rating))}
+                    className="rounded-full p-1 text-amber-500 transition hover:scale-110"
+                    aria-label={`Rate ${rating} stars`}
+                  >
+                    <Star size={26} fill={(recipe.userRating || 0) >= rating ? 'currentColor' : 'none'} />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
           <div className="mt-7 flex flex-wrap items-center justify-between gap-3">

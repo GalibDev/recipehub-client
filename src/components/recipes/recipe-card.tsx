@@ -45,11 +45,28 @@ export function RecipeCard({ recipe, compact = false }: { recipe: Recipe; compac
             {recipe.likesCount || 0}
           </span>
         </div>
+        <div className="mt-3 flex items-center gap-1 text-sm font-bold text-amber-500">
+          <span>{recipe.ratingAverage?.toFixed(1) || '0.0'}</span>
+          <span className="flex">
+            {[1, 2, 3, 4, 5].map((rating) => (
+              <StarIcon key={rating} filled={(recipe.ratingAverage || 0) >= rating - 0.25} />
+            ))}
+          </span>
+          <span className="text-xs font-medium text-base-content/45">({recipe.ratingCount || 0})</span>
+        </div>
         <Link href={`/recipes/${recipe._id}`} className="btn btn-outline btn-sm mt-4 w-full rounded-xl">
           <Eye size={15} />
           View Details
         </Link>
       </div>
     </motion.article>
+  );
+}
+
+function StarIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg className="size-4" viewBox="0 0 20 20" fill={filled ? 'currentColor' : 'none'} stroke="currentColor">
+      <path d="m10 1.8 2.5 5.1 5.6.8-4 4 1 5.5-5-2.7-5 2.7 1-5.5-4-4 5.6-.8L10 1.8Z" />
+    </svg>
   );
 }

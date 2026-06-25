@@ -48,6 +48,10 @@ export const createReportSchema = z.object({
   reason: z.enum(['Spam', 'Offensive Content', 'Copyright Issue']),
 });
 
+export const ratingSchema = z.object({
+  rating: z.coerce.number().int().min(1).max(5),
+});
+
 export const updateReportSchema = z.object({
   status: z.enum(['pending', 'dismissed', 'resolved']),
 });

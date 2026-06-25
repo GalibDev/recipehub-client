@@ -26,6 +26,9 @@ export type Recipe = {
   authorEmail: string;
   likesCount: number;
   liked?: boolean;
+  ratingAverage?: number;
+  ratingCount?: number;
+  userRating?: number;
   isFeatured: boolean;
   status?: string;
   price?: number;

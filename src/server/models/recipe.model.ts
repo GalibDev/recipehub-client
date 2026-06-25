@@ -15,6 +15,14 @@ const recipeSchema = new Schema(
     authorEmail: String,
     likesCount: { type: Number, default: 0 },
     likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    ratings: [
+      {
+        userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+        value: { type: Number, min: 1, max: 5, required: true },
+      },
+    ],
+    ratingAverage: { type: Number, default: 0 },
+    ratingCount: { type: Number, default: 0 },
     isFeatured: { type: Boolean, default: false },
     status: { type: String, enum: ['published', 'hidden'], default: 'published' },
     price: { type: Number, default: 2.99, min: 0 },

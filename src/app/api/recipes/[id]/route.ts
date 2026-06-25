@@ -25,6 +25,9 @@ export async function GET(_request: Request, context: RouteContext) {
     return json({
       ...recipe,
       liked: user ? recipe.likedBy.some((userId) => String(userId) === String(user._id)) : false,
+      userRating: user
+        ? recipe.ratings?.find((rating) => String(rating.userId) === String(user._id))?.value || 0
+        : 0,
     });
   } catch (error) {
     return handleApiError(error);
