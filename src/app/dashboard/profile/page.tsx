@@ -122,14 +122,21 @@ export default function ProfilePage() {
             {user?.isPremium ? 'Unlimited' : '$9.99'}
             {!user?.isPremium ? <span className="text-base font-medium text-base-content/50"> / lifetime</span> : null}
           </p>
-          <button
-            type="button"
-            disabled={Boolean(user?.isPremium) || isUpgrading}
-            onClick={upgradeToPremium}
-            className="btn-brand mt-7 w-full"
-          >
-            {user?.isPremium ? 'Already Premium' : isUpgrading ? 'Redirecting...' : 'Upgrade Now'}
-          </button>
+          {user?.isPremium ? (
+            <div className="mt-7 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 font-bold text-amber-700">
+              <BadgeCheck className="mx-auto mb-2" size={24} />
+              Already Premium Member
+            </div>
+          ) : (
+            <button
+              type="button"
+              disabled={isUpgrading}
+              onClick={upgradeToPremium}
+              className="btn-brand mt-7 w-full"
+            >
+              {isUpgrading ? 'Redirecting...' : 'Upgrade Now'}
+            </button>
+          )}
         </section>
       </div>
     </>

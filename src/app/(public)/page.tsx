@@ -298,7 +298,7 @@ export default function HomePage() {
             <p className="mt-3 text-white/70">
               Unlock unlimited recipe uploads, premium badges, and exclusive culinary content.
             </p>
-            <Link href="/dashboard" className="btn mt-7 border-amber-400 bg-transparent text-amber-300 hover:bg-amber-400 hover:text-black">
+            <Link href="/dashboard/profile" className="btn mt-7 border-amber-400 bg-transparent text-amber-300 hover:bg-amber-400 hover:text-black">
               Upgrade Now
             </Link>
           </motion.div>
