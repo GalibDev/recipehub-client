@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle2, ChefHat, Clock, Flag, Globe2, Heart, ShoppingBag, Star } from 'lucide-react';
+import { CheckCircle2, ChefHat, Clock, Flag, Globe2, Heart, ShoppingBag, Star, X } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { api, messageOf } from '@/lib/api';
@@ -22,6 +22,7 @@ export default function RecipeDetailsPage() {
   const params = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const [reportReason, setReportReason] = useState<(typeof reportReasons)[number]>(reportReasons[0]);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const { data: recipe, isLoading, error } = useQuery({
     queryKey: ['recipe', params.id],
@@ -75,6 +76,7 @@ export default function RecipeDetailsPage() {
           reason: reportReason,
         });
         toast.success('Report submitted');
+        setReportOpen(false);
       } catch (reportError) {
         toast.error(messageOf(reportError));
       }
@@ -181,16 +183,10 @@ export default function RecipeDetailsPage() {
               <Star size={18} />
               Favorite
             </button>
-            <div className="flex gap-2">
-              <select className="select select-bordered flex-1" value={reportReason} onChange={(event) => setReportReason(event.target.value as typeof reportReasons[number])}>
-                {reportReasons.map((reason) => (
-                  <option key={reason}>{reason}</option>
-                ))}
-              </select>
-              <button onClick={reportRecipe} className="btn btn-outline">
-                <Flag size={18} />
-              </button>
-            </div>
+            <button onClick={() => ensureUser(() => setReportOpen(true))} className="btn btn-outline">
+              <Flag size={18} />
+              Report
+            </button>
           </div>
         </div>
       </div>
@@ -220,6 +216,41 @@ export default function RecipeDetailsPage() {
           </ol>
         </div>
       </div>
+      {reportOpen ? (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/45 p-4">
+          <div className="w-full max-w-md rounded-3xl border border-base-300 bg-base-100 p-6 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold">Report Recipe</h2>
+                <p className="mt-2 text-sm text-base-content/60">Choose a reason and submit it for admin review.</p>
+              </div>
+              <button className="btn btn-ghost btn-circle" onClick={() => setReportOpen(false)}>
+                <X size={18} />
+              </button>
+            </div>
+            <label className="mt-6 block">
+              <span className="label-text-strong">Reason</span>
+              <select
+                className="select select-bordered w-full"
+                value={reportReason}
+                onChange={(event) => setReportReason(event.target.value as (typeof reportReasons)[number])}
+              >
+                {reportReasons.map((reason) => (
+                  <option key={reason}>{reason}</option>
+                ))}
+              </select>
+            </label>
+            <div className="mt-6 flex justify-end gap-3">
+              <button className="btn btn-outline" onClick={() => setReportOpen(false)}>
+                Cancel
+              </button>
+              <button className="btn-brand" onClick={reportRecipe}>
+                Submit Report
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

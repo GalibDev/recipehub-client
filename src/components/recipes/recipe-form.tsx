@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { api, messageOf } from '@/lib/api';
@@ -22,9 +23,12 @@ type RecipeFormValues = {
 export function RecipeForm({ recipe, redirectTo = '/dashboard/recipes' }: { recipe?: Recipe; redirectTo?: string }) {
   const router = useRouter();
   const editing = Boolean(recipe);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { isSubmitting },
   } = useForm<RecipeFormValues>({
     defaultValues: {
@@ -39,6 +43,40 @@ export function RecipeForm({ recipe, redirectTo = '/dashboard/recipes' }: { reci
       instructions: recipe?.instructions?.join('\n') || '',
     },
   });
+  const imagePreview = watch('recipeImage');
+
+  async function uploadImage(file?: File) {
+    if (!file) return;
+
+    const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+    if (!apiKey) {
+      toast.error('ImgBB key missing. Add NEXT_PUBLIC_IMGBB_API_KEY to env.');
+      return;
+    }
+
+    try {
+      setUploadingImage(true);
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+        method: 'POST',
+        body: formData,
+      });
+      const result = await response.json();
+
+      if (!response.ok || !result?.data?.url) {
+        throw new Error(result?.error?.message || 'Image upload failed');
+      }
+
+      setValue('recipeImage', result.data.url, { shouldValidate: true, shouldDirty: true });
+      toast.success('Image uploaded');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Image upload failed');
+    } finally {
+      setUploadingImage(false);
+    }
+  }
 
   async function onSubmit(values: RecipeFormValues) {
     try {
@@ -81,6 +119,22 @@ export function RecipeForm({ recipe, redirectTo = '/dashboard/recipes' }: { reci
           <span className="label-text-strong">Recipe Image URL</span>
           <input className="input-clean" {...register('recipeImage', { required: true })} />
         </label>
+        <label className="block">
+          <span className="label-text-strong">Upload Image (ImgBB)</span>
+          <input
+            type="file"
+            accept="image/*"
+            disabled={uploadingImage}
+            className="file-input file-input-bordered w-full"
+            onChange={(event) => uploadImage(event.target.files?.[0])}
+          />
+          <small className="mt-2 block text-base-content/50">
+            {uploadingImage ? 'Uploading image...' : 'Upload an image or paste a direct image URL above.'}
+          </small>
+        </label>
+        {imagePreview ? (
+          <img className="h-36 w-full rounded-2xl object-cover" src={imagePreview} alt="Recipe preview" />
+        ) : null}
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
             <span className="label-text-strong">Category</span>
